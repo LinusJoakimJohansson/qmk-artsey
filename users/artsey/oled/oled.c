@@ -14,7 +14,7 @@ uint32_t boot_logo_timer = 0;
 bool boot_logo_cleared = false;
 
 static void render_icon(void) {
-    oled_write_raw_P(artsey_logo, sizeof(artsey_logo));
+    oled_write_raw_P(flareon_logo, sizeof(flareon_logo));
 }
 
 #ifdef ARTSEY_BOOT_LOGO
