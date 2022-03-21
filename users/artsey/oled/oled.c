@@ -14,7 +14,7 @@ uint32_t boot_logo_timer = 0;
 bool boot_logo_cleared = false;
 
 static void render_icon(void) {
-    oled_write_P(artsey_logo, sizeof(artsey_logo));
+    oled_write_raw_P(artsey_logo, sizeof(artsey_logo));
 }
 
 #ifdef ARTSEY_BOOT_LOGO
@@ -32,72 +32,58 @@ static void render_status(void) {
     switch (get_highest_layer(layer_state)) {
         case LAYER_ID_BASE:
 #ifdef ARTSEY_SIZE_STD
-            oled_write_P(PSTR(" ART "), false);
-            oled_write_P(PSTR(" SEY "), false);
+            oled_write_P(PSTR(" ARTSEY "), false);
 #endif
 #ifdef ARTSEY_SIZE_BIG
-            oled_write_P(PSTR("*ART "), false);
-            oled_write_P(PSTR(" SEY*"), false);
+            oled_write_P(PSTR("*ARTSEY* "), false);
 #endif
 #ifdef ARTSEY_SIZE_40P
-            oled_write_P(PSTR("*ART*"), false);
-            oled_write_P(PSTR("*SEY*"), false);
+            oled_write_P(PSTR("*ART**SEY*"), false);
 #endif
             break;
         case LAYER_ID_NUMBERS:
-            oled_write_P(PSTR(" Num "), false);
-            oled_write_P(PSTR(" ber "), false);
+            oled_write_P(PSTR(" Number "), false);
             break;
         case LAYER_ID_SYMBOLS:
-            oled_write_P(PSTR(" Sym "), false);
-            oled_write_P(PSTR(" bol "), false);
+            oled_write_P(PSTR(" Symbol "), false);
             break;
         case LAYER_ID_PARENTHETICALS:
-            oled_write_P(PSTR(" Par "), false);
-            oled_write_P(PSTR("  en "), false);
+            oled_write_P(PSTR(" Parenthenticals "), false);
             break;
         case LAYER_ID_NAVIGATION:
-            oled_write_P(PSTR(" Nav "), false);
-            oled_write_P(PSTR("     "), false);
+            //oled_write_P(PSTR(" Navigation "), false);
+            oled_write_raw_P(icon_navigation_abullet, sizeof(icon_navigation_abullet));
             break;
         case LAYER_ID_MOUSE:
-            oled_write_P(PSTR(" Mou "), false);
-            oled_write_P(PSTR("  se "), false);
+            //oled_write_P(PSTR(" Mouse "), false);
+            oled_write_raw_P(icon_mouse_abullet, sizeof(icon_mouse_abullet));
             break;
         case LAYER_ID_CUSTOM:
-            oled_write_P(PSTR(" Cus "), false);
-            oled_write_P(PSTR(" tom "), false);
+            oled_write_P(PSTR(" Custom "), false);
             break;
 #ifdef ARTSEY_SIZE_BIG
         case LAYER_ID_BIG_SYM:
-            oled_write_P(PSTR("*Sym "), false);
-            oled_write_P(PSTR(" bol*"), false);
+            oled_write_P(PSTR("*Symbol "), false);
             break;
         case LAYER_ID_BIG_FUN:
-            oled_write_P(PSTR("*Fun "), false);
-            oled_write_P(PSTR("  ct*"), false);
+            oled_write_P(PSTR("*Function "), false);
             break;
 #endif
 #ifdef ARTSEY_SIZE_40P
         case LAYER_ID_BIG_SYM:
-            oled_write_P(PSTR("*Sym*"), false);
-            oled_write_P(PSTR("*bol*"), false);
+            oled_write_P(PSTR("*Symbol*"), false);
             break;
         case LAYER_ID_BIG_FUN:
-            oled_write_P(PSTR("*Fun*"), false);
-            oled_write_P(PSTR("* ct*"), false);
+            oled_write_P(PSTR("*Function*"), false);
             break;
         case LAYER_ID_40P_BASE:
-            oled_write_P(PSTR(" 40% "), false);
-            oled_write_P(PSTR(" ANSI"), false);
+            oled_write_P(PSTR(" 40% ANSI "), false);
             break;
         case LAYER_ID_40P_FUNCTION:
-            oled_write_P(PSTR(" 40% "), false);
-            oled_write_P(PSTR(" Fun "), false);
+            oled_write_P(PSTR(" 40% Function "), false);
             break;
         case LAYER_ID_40P_NAVIGATION:
-            oled_write_P(PSTR(" 40% "), false);
-            oled_write_P(PSTR(" Nav "), false);
+            oled_write_P(PSTR(" 40% Navigation"), false);
             break;
 #endif
         default:
@@ -105,6 +91,26 @@ static void render_status(void) {
             oled_write_P(PSTR(" ??? "), false);
             break;
     }
+
+void render_keylock_status(uint8_t led_usb_state) {
+    oled_write_P(PSTR("Lock:"), false);
+    oled_write_P(PSTR(" "), false);
+    if (led_usb_state & (1 << USB_LED_CAPS_LOCK)){
+        oled_write_raw_P(icon_caps_lock_abullet, sizeof(icon_caps_lock_abullet));
+    }
+    if (led_usb_state & (1 << USB_LED_SCROLL_LOCK)){
+        oled_write_raw_P(icon_scroll_lock_abullet, sizeof(icon_scroll_lock_abullet));  
+    }
+}
+
+void render_mod_status(uint8_t modifiers) {
+    oled_write_P(PSTR("Mods:"), false);
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("S"), (modifiers & MOD_MASK_SHIFT));
+    oled_write_P(PSTR("C"), (modifiers & MOD_MASK_CTRL));
+    oled_write_P(PSTR("A"), (modifiers & MOD_MASK_ALT));
+    oled_write_P(PSTR("G"), (modifiers & MOD_MASK_GUI));
+}
 
     //oled_set_cursor(0, 4);
     //oled_write_raw_P(icon_caps_lock_abullet, sizeof(icon_caps_lock_abullet));
@@ -143,6 +149,7 @@ bool oled_task_user(void) {
     }
     render_icon();
     render_status();
+    render_keylock_status(host_keyboard_leds());
     oled_render();
 #ifdef ARTSEY_BOOT_LOGO
     }
