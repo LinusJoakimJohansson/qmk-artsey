@@ -92,6 +92,18 @@ static void render_status(void) {
             break;
     }
 
+    //oled_set_cursor(0, 4);
+    //oled_write_raw_P(icon_caps_lock_abullet, sizeof(icon_caps_lock_abullet));
+    //oled_set_cursor(5, 2);
+    //oled_write_P(icon_scroll_lock_abullet, sizeof(icon_scroll_lock_abullet));
+    //oled_set_cursor(0, 3);
+    //oled_write_P(icon_navigation_abullet, sizeof(icon_navigation_abullet));
+    //oled_set_cursor(5, 3);
+    //oled_write_P(icon_mouse_abullet, sizeof(icon_mouse_abullet));
+    //oled_set_cursor(0, 4);
+    //oled_write_P(icon_settings_abullet, sizeof(icon_settings_abullet));
+}
+
 void render_keylock_status(uint8_t led_usb_state) {
     oled_write_P(PSTR("Lock:"), false);
     oled_write_P(PSTR(" "), false);
@@ -110,18 +122,6 @@ void render_mod_status(uint8_t modifiers) {
     oled_write_P(PSTR("C"), (modifiers & MOD_MASK_CTRL));
     oled_write_P(PSTR("A"), (modifiers & MOD_MASK_ALT));
     oled_write_P(PSTR("G"), (modifiers & MOD_MASK_GUI));
-}
-
-    //oled_set_cursor(0, 4);
-    //oled_write_raw_P(icon_caps_lock_abullet, sizeof(icon_caps_lock_abullet));
-    //oled_set_cursor(5, 2);
-    //oled_write_P(icon_scroll_lock_abullet, sizeof(icon_scroll_lock_abullet));
-    //oled_set_cursor(0, 3);
-    //oled_write_P(icon_navigation_abullet, sizeof(icon_navigation_abullet));
-    //oled_set_cursor(5, 3);
-    //oled_write_P(icon_mouse_abullet, sizeof(icon_mouse_abullet));
-    //oled_set_cursor(0, 4);
-    //oled_write_P(icon_settings_abullet, sizeof(icon_settings_abullet));
 }
 
 bool oled_task_user(void) {
