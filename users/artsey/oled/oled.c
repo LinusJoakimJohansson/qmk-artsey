@@ -105,6 +105,7 @@ static void render_status(void) {
 }
 
 void render_keylock_status(uint8_t led_usb_state) {
+    oled_set_cursor(0, 7);
     oled_write_P(PSTR("Lock:"), false);
     oled_write_P(PSTR(" "), false);
     oled_write_P(PSTR("N"), led_usb_state & (1 << USB_LED_NUM_LOCK));
