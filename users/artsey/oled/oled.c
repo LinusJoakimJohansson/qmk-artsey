@@ -107,12 +107,9 @@ static void render_status(void) {
 void render_keylock_status(uint8_t led_usb_state) {
     oled_write_P(PSTR("Lock:"), false);
     oled_write_P(PSTR(" "), false);
-    if (led_usb_state & (1 << USB_LED_CAPS_LOCK)){
-        oled_write_raw_P(icon_caps_lock_abullet, sizeof(icon_caps_lock_abullet));
-    }
-    if (led_usb_state & (1 << USB_LED_SCROLL_LOCK)){
-        oled_write_raw_P(icon_scroll_lock_abullet, sizeof(icon_scroll_lock_abullet));  
-    }
+    oled_write_P(PSTR("N"), led_usb_state & (1 << USB_LED_NUM_LOCK));
+    oled_write_P(PSTR("C"), led_usb_state & (1 << USB_LED_CAPS_LOCK));
+    oled_write_ln_P(PSTR("S"), led_usb_state & (1 << USB_LED_SCROLL_LOCK));
 }
 
 void render_mod_status(uint8_t modifiers) {
@@ -147,10 +144,16 @@ bool oled_task_user(void) {
     if (!is_keyboard_master()) {
         return false;
     }
+
     render_icon();
     render_status();
     render_keylock_status(host_keyboard_leds());
     oled_render();
+
+    if (!is_oled_scrolling()) {
+        oled_scroll_set_area(0,3);
+        oled_scroll_right();
+    }
 #ifdef ARTSEY_BOOT_LOGO
     }
 #endif
