@@ -150,10 +150,10 @@ bool oled_task_user(void) {
     render_keylock_status(host_keyboard_leds());
     oled_render();
 
-    if (!is_oled_scrolling()) {
-        oled_scroll_set_area(0,3);
-        oled_scroll_right();
-    }
+    //if (!is_oled_scrolling()) {
+    //    oled_scroll_set_area(0,3);
+    //    oled_scroll_right();
+    //}
 #ifdef ARTSEY_BOOT_LOGO
     }
 #endif
